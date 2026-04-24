@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YOTTA CORP — Nima Qilay?</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=IM+Fell+English:ital@0;1&family=Manrope:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  min-height: 100vh;
+  background: #f2ede4;
+  font-family: 'IM Fell English', serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px;
+}
+
+.header { text-align: center; margin-bottom: 48px; }
+
+.corp-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  letter-spacing: 6px;
+  color: #999;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+h1 {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(64px, 14vw, 110px);
+  font-weight: 700;
+  color: #1a1814;
+  line-height: 1;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+h1 span { color: #b83020; }
+
+.tagline {
+  margin-top: 14px;
+  font-size: 14px;
+  color: #888;
+  font-style: italic;
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  padding: 20px 32px;
+  background: #1a1814;
+  color: #f2ede4;
+  border: none;
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin: 0 auto 40px;
+}
+
+.btn:hover { background: #b83020; }
+.btn:active { transform: translateY(1px); }
+
+.card {
+  width: 100%;
+  max-width: 480px;
+  border: 1px solid #d5cfc2;
+  background: #fff;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card.visible { opacity: 1; }
+
+.card-top {
+  background: #1a1814;
+  padding: 10px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-top-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #f2ede4;
+  text-transform: uppercase;
+}
+
+.card-top-num {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #c9962a;
+}
+
+.card-body { padding: 28px 26px 22px; }
+
+.main-decision {
+  font-family: 'Oswald', sans-serif;
+  font-size: 52px;
+  font-weight: 700;
+  color: #1a1814;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.main-decision.show { opacity: 1; transform: translateY(0); }
+
+.divider { height: 1px; background: #e8e2d8; margin-bottom: 18px; }
+
+.sub-item {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  color: #444;
+  line-height: 1.4;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.sub-item.show { opacity: 1; transform: translateX(0); }
+.sub-dot { color: #c9962a; flex-shrink: 0; }
+
+.analysis {
+  margin-top: 18px;
+  padding: 16px 18px;
+  background: #f8f5ef;
+  border-left: 3px solid #b83020;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.75;
+  opacity: 0;
+  transition: opacity 0.4s ease 0.4s;
+}
+
+.analysis.show { opacity: 1; }
+
+.card-footer {
+  padding: 12px 26px;
+  border-top: 1px solid #e8e2d8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-tag {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #b83020;
+  text-transform: uppercase;
+}
+
+.footer-code {
+  font-size: 11px;
+  color: #bbb;
+  font-family: monospace;
+  letter-spacing: 1px;
+}
+
+.counter {
+  margin-top: 28px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #bbb;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.comment-section {
+  width: 100%;
+  max-width: 480px;
+  margin-top: 32px;
+}
+
+.comment-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: #999;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.comment-form { display: flex; flex-direction: column; gap: 10px; }
+
+.comment-input, .comment-textarea {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #d5cfc2;
+  padding: 12px 14px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  color: #1a1814;
+  outline: none;
+  resize: none;
+  transition: border-color 0.15s;
+}
+
+.comment-input:focus, .comment-textarea:focus { border-color: #1a1814; }
+.comment-input::placeholder, .comment-textarea::placeholder { color: #bbb; }
+
+.comment-btn {
+  align-self: flex-end;
+  padding: 10px 24px;
+  background: #1a1814;
+  color: #f2ede4;
+  border: none;
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.comment-btn:hover { background: #b83020; }
+
+.comment-success {
+  display: none;
+  text-align: center;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  color: #2d6b3a;
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(45,107,58,0.08);
+  border: 1px solid rgba(45,107,58,0.2);
+}
+
+.site-footer {
+  margin-top: 28px;
+  font-size: 10px;
+  color: #ccc;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-family: 'Oswald', sans-serif;
+}
+
+/* Mini player */
+.mini-player {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  width: 300px;
+  background: #1a1814;
+  z-index: 999;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  display: none;
+}
+
+.mini-player.open { display: block; }
+
+.mini-player-header {
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  user-select: none;
+}
+
+.mini-player-left { display: flex; align-items: center; gap: 10px; }
+
+.mini-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #f2ede4;
+  text-transform: uppercase;
+}
+
+.mini-close {
+  font-size: 10px;
+  color: rgba(242,237,228,0.4);
+  cursor: pointer;
+}
+
+.mini-close:hover { color: #b83020; }
+
+.mini-player-body {
+  width: 100%; height: 140px;
+  background: #111; cursor: pointer;
+}
+
+.yt-placeholder {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 8px; width: 100%; height: 100%;
+}
+
+.yt-placeholder:hover { background: rgba(255,255,255,0.04); }
+
+.yt-logo {
+  width: 44px; height: 44px;
+  background: #b83020; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: white;
+}
+
+.yt-text {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px; letter-spacing: 2px;
+  color: #f2ede4; text-transform: uppercase;
+}
+
+.yt-subtext {
+  font-family: 'Manrope', sans-serif;
+  font-size: 10px; color: rgba(242,237,228,0.4);
+}
+
+.mini-bars {
+  display: flex; align-items: flex-end;
+  gap: 2px; height: 12px;
+}
+
+.mini-bars span {
+  display: block; width: 3px;
+  background: #c9962a; border-radius: 1px; height: 3px;
+}
+
+.mini-bars.active span { animation: bar 0.6s ease-in-out infinite alternate; }
+.mini-bars.active span:nth-child(2) { animation-delay: 0.15s; }
+.mini-bars.active span:nth-child(3) { animation-delay: 0.3s; }
+.mini-bars.active span:nth-child(4) { animation-delay: 0.45s; }
+
+@keyframes bar { from{height:3px} to{height:11px} }
+
+.music-fab {
+  position: fixed; bottom: 24px; right: 24px;
+  width: 46px; height: 46px;
+  background: #1a1814; color: #c9962a;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; cursor: pointer; z-index: 999;
+  transition: background 0.15s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.music-fab:hover { background: #b83020; color: #f2ede4; }
+.music-fab.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="corp-name">YOTTA CORP · Hayot Qarorlari Byurosi</div>
+  <h1>Nima <span>Qilay?</span></h1>
+  <p class="tagline">Rasmiy avtomatlashtirilgan qaror tizimi</p>
+</div>
+
+<button class="btn" id="btn" onclick="generate()">⚡ Nima Qilay</button>
+
+<div class="card" id="card">
+  <div class="card-top">
+    <span class="card-top-label">Rasmiy xulosa</span>
+    <span class="card-top-num" id="reqNum">REQ #000</span>
+  </div>
+  <div class="card-body">
+    <div class="main-decision" id="mainText">—</div>
+    <div class="divider"></div>
+    <div id="subItems"></div>
+    <div class="analysis" id="analysis"></div>
+  </div>
+  <div class="card-footer">
+    <span class="footer-tag" id="footerTag">—</span>
+    <span class="footer-code" id="footerCode">—</span>
+  </div>
+</div>
+
+<div class="counter" id="counter">Qarorlar: 0</div>
+
+<div class="site-footer">© YOTTA CORP 2024</div>
+
+<div class="mini-player" id="miniPlayer">
+  <div class="mini-player-header">
+    <div class="mini-player-left">
+      <div class="mini-bars" id="miniBars">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <span class="mini-title">deadmau5</span>
+    </div>
+    <span class="mini-close" onclick="closePlayer(event)">✕</span>
+  </div>
+  <div class="mini-player-body">
+    <div class="yt-placeholder" onclick="openYT()">
+      <div class="yt-logo">▶</div>
+      <div class="yt-text">Bosing — musiqa boshlanadi</div>
+      <div class="yt-subtext">deadmau5 — Strobe</div>
+    </div>
+  </div>
+</div>
+
+<div class="music-fab" id="musicFab" onclick="openPlayer()">♪</div>
+
+<script>
+const decisions = [
+  { main:"Uxla", subs:["Ko'zingni yum","Yana biroz uxla","Tush ko'r"], analysis:"Uxlash — insoniyat tomonidan ming yillar davomida sinovdan o'tgan eng ishonchli qaror. 94.7% hollarda muammoni hal qiladi yoki unuttirib yuboradi.", tag:"Klassik yondashuv", code:"SLP-001" },
+  { main:"Hech narsa qilma", subs:["Bu ham bir qaror","Juda to'g'ri","Kayfiyat zo'r"], analysis:"Harakatsizlik ko'pincha past baholanadi, lekin bu ko'pincha eng optimal strategiya. Stok-Deyl paradoksi: qilmaslik ham bir xatti-harakat.", tag:"Zen strategiyasi", code:"NON-042" },
+  { main:"Yana o'ylab ko'r", subs:["Bir haftadan so'ng","Oydan so'ng","Umuman o'ylama"], analysis:"O'ylash jarayoni cheksiz davom ettirilishi mumkin. Qarorlarning 78% asl fikrga qaytadi. Shuning uchun boshlang'ich instinkt ko'pincha to'g'ri.", tag:"Loop protokoli", code:"THK-007" },
+  { main:"Choy ich", subs:["Ikkinchi piyola","Uchinchi piyola ham","Qant qo'shma"], analysis:"Choy ichish — rasmiy tan olingan stressni kamaytirish usuli. Issiq ichimlik prefrontal korteksni faollashtiradi. Ilmiy isbotlangan.", tag:"Madaniy merosimiz", code:"TEA-999" },
+  { main:"Telefonga qara", subs:["Yana bir marta","Hech narsa yo'q","Balki yangi xabar bor"], analysis:"Telefon tekshirish har 7 daqiqada bir marta sodir bo'lishi statistik norma. Agar hech narsa bo'lmasa ham — kutilayotgan sezgi miyaga taskin beradi.", tag:"Digital loop", code:"PHN-404" },
+  { main:"Derazadan qara", subs:["Osmonga ham qara","Odamlarni kuzat","Nima ko'rding?"], analysis:"Passiv kuzatuv orqali dunyo bilan aloqani saqlash usuli. Kognitiv psixologiyada bu 'grounding technique' deyiladi. Narx: bepul.", tag:"Chuqur mushohada", code:"WIN-088" },
+  { main:"Nonushta qil", subs:["Xuddi tushlikday","Kechlikni ham qo'sh","Desertni unut"], analysis:"Och qolgan holda qabul qilingan qarorlarning 89% keyinchalik afsos bilan qarab chiqiladi. Ovqatlan — keyin o'yla.", tag:"Biologik protokol", code:"EAT-333" },
+  { main:"Musiqa eshit", subs:["Bir xil qo'shiqni","25-marta ketma-ket","Qo'shni bilsin"], analysis:"Bitta qo'shiqni takrorlash — his-tuyg'ularni qayta ishlash mexanizmi. Bu obsessiv xatti-harakat emas, balki majburiy terapiya.", tag:"Frekuens buzilishi", code:"MUS-212" },
+  { main:"Sayr qil", subs:["Qaytib kel","Yana bor","Qaerga borayotganingni bil"], analysis:"Sayr davomida qabul qilingan qarorlar keyinchalik kamroq afsus keltiradi. Statistika: 67%. Piyoda yurish — bepul terapiya.", tag:"Mobil protokol", code:"WLK-055" },
+  { main:"Kitob och", subs:["Birinchi sahifasini o'qi","Ikkinchisini ham","Kitobni sekin yop"], analysis:"Kitob ochish va yopish o'rtasida o'tgan vaqt — intellektual faollik illuziyasini yaratadi. Bu ham bir shakldagi dam olish.", tag:"Bilim illyuziyasi", code:"BK-101" },
+  { main:"Do'stga yoz", subs:["Keyin o'chir","Yuborma — saqlash yetarli","Yoki yuborib ko'r"], analysis:"Xabar yozish aloqa instinktini qondiradi. Yubormaslik esa xavfsiz xavf sanaladi. O'chirishdan oldin bir marta o'qi.", tag:"Aloqa urinishi", code:"MSG-017" },
+  { main:"Hech nima boshlama", subs:["Ertaga boshlaysan","Balki indiniga","Vaqti kelsa boshlanadi"], analysis:"Prokrastinatsiya — evolyutsion himoya mexanizmi. Kutish strategiyasi yangi ma'lumot to'plashga imkon beradi.", tag:"Ekspert maslahati", code:"PRO-000" },
+  { main:"Suv ich", subs:["Yana bir stakan","Organizm rozi","Jigar ham shod"], analysis:"Odamlarning 75% surunkali suvsizlik holatida yashaydi. Qaror qabul qilish qobiliyati suvsizlikda 23% pasayadi.", tag:"H₂O protokoli", code:"H2O-200" },
+  { main:"O'zingga qara", subs:["Oynaga yaqinroq bor","Salom de","U ham salom der"], analysis:"Oynaga qarab salom berish ijtimoiy normalardan ozgina chetga chiqish bo'lib, kreativlikni oshiradi.", tag:"Nafs bilan suhbat", code:"MRR-777" },
+  { main:"Pol ustiga yot", subs:["Shiftga chuqur qara","Sekin nafas ol","Yer sovuqmi?"], analysis:"Ko'plab mashhur mutafakkirlar g'oyalarini yotgan holda topishgan. YOTTA CORP bu pozitsiyani 'ijodiy protokol' deb tasniflaydi.", tag:"Gravitatsion sessiya", code:"FLR-011" },
+  { main:"Ro'yxat tuz", subs:["1. Ro'yxat tuz ✓","2. Yana bir ro'yxat","3. Ro'yxatni yo'qot"], analysis:"Ro'yxatdagi vazifalarning 41% hech qachon bajarilmaydi. Shunga qaramay, ro'yxat tuzish o'zi yaxshi his qildiradi.", tag:"Lista nazariyasi", code:"LST-066" },
+  { main:"Chiq tashqariga", subs:["Bir oz tur","Atrofga qara","Qaytib kir — sovuq"], analysis:"Hatto 3 daqiqalik tashqi muhit bilan kontakt serotonin darajasini ko'taradi.", tag:"Havo almashish", code:"OUT-044" },
+  { main:"Shivirla", subs:["Nima dedim?","O'zing bilasan","Yana bir marta"], analysis:"Past ovozda gapirish stress darajasini pasaytiradi. Yonidagilar esa siz haqingizda qiziqroq o'ylashadi.", tag:"Sirli kommunikatsiya", code:"WSP-030" },
+  { main:"Hamma narsani kechiktir", subs:["Juda professional qadam","Isbotlangan usul","YOTTA CORP tavsiyasi"], analysis:"Kechiktirish — 'strategik fikrlash vaqtini ko'paytirish' dir. Muddatidan keyin qarorlarning 63% to'g'ri chiqadi.", tag:"Kechikish nazariyasi", code:"DLY-999" },
+  { main:"Eshikni och va yop", subs:["Nima kutgan eding?","Hech kim yo'q","Yana bir marta och"], analysis:"Eshikdan o'tish xotirani o'chiradi — shuning uchun 'nima uchun keldim?' deb so'raysiz.", tag:"Eshik paradoksi", code:"DR-008" },
+];
+
+let count = 0, lastIdx = -1;
+
+function generate() {
+  let idx;
+  do { idx = Math.floor(Math.random() * decisions.length); } while (idx === lastIdx);
+  lastIdx = idx;
+  const d = decisions[idx];
+  count++;
+
+  document.getElementById('reqNum').textContent = 'REQ #' + String(count).padStart(3,'0');
+  document.getElementById('counter').textContent = 'Qarorlar: ' + count;
+
+  const mainT = document.getElementById('mainText');
+  const analysisEl = document.getElementById('analysis');
+  mainT.classList.remove('show');
+  analysisEl.classList.remove('show');
+  mainT.textContent = d.main;
+  analysisEl.textContent = d.analysis;
+
+  const subCont = document.getElementById('subItems');
+  subCont.innerHTML = '';
+  d.subs.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'sub-item';
+    div.innerHTML = `<span class="sub-dot">·</span><span>${s}</span>`;
+    subCont.appendChild(div);
+    setTimeout(() => div.classList.add('show'), 80 + i * 110);
+  });
+
+  document.getElementById('footerTag').textContent = d.tag;
+  document.getElementById('footerCode').textContent = d.code;
+  document.getElementById('card').classList.add('visible');
+
+  setTimeout(() => mainT.classList.add('show'), 40);
+  setTimeout(() => analysisEl.classList.add('show'), 320);
+}
+
+// Music
+function openPlayer() {
+  document.getElementById('musicFab').classList.add('hidden');
+  document.getElementById('miniPlayer').classList.add('open');
+  document.getElementById('miniBars').classList.add('active');
+}
+
+function closePlayer(e) {
+  e.stopPropagation();
+  document.getElementById('miniPlayer').classList.remove('open');
+  document.getElementById('musicFab').classList.remove('hidden');
+  document.getElementById('miniBars').classList.remove('active');
+}
+
+function openYT() {
+  window.open('https://www.youtube.com/watch?v=tKi9Z-f6qX4','deadmau5','width=500,height=340,left=200,top=150,toolbar=0,menubar=0,location=0');
+}
+</script>
+</body>
+</html>
