@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YOTTA CORP — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --bg:#111009; --surface:#1a1814; --border:#2a2720; --paper:#f2ede4; --red:#b83020; --gold:#c9962a; --green:#2d6b3a; --muted:#6b6450; }
+body { min-height:100vh; background:var(--bg); font-family:'Manrope',sans-serif; color:var(--paper); }
+
+.login-screen { min-height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:24px; }
+.login-logo { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:6px; color:var(--muted); text-transform:uppercase; }
+.login-title { font-family:'Oswald',sans-serif; font-size:32px; font-weight:700; color:var(--paper); letter-spacing:2px; text-transform:uppercase; }
+.login-title span { color:var(--red); }
+.login-box { width:320px; display:flex; flex-direction:column; gap:12px; }
+.login-input { width:100%; padding:14px 16px; background:var(--surface); border:1px solid var(--border); color:var(--paper); font-family:'Manrope',sans-serif; font-size:14px; outline:none; transition:border-color 0.15s; }
+.login-input:focus { border-color:var(--gold); }
+.login-input::placeholder { color:var(--muted); }
+.login-btn { padding:14px; background:var(--red); color:var(--paper); border:none; font-family:'Oswald',sans-serif; font-size:14px; letter-spacing:4px; text-transform:uppercase; cursor:pointer; transition:background 0.15s; }
+.login-btn:hover { background:#8a2418; }
+.login-error { display:none; text-align:center; font-size:12px; color:var(--red); }
+
+.admin-screen { display:none; }
+.admin-screen.visible { display:block; }
+
+.topbar { height:48px; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 28px; position:sticky; top:0; z-index:100; }
+.topbar-brand { font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:4px; color:var(--paper); text-transform:uppercase; }
+.topbar-brand span { color:var(--gold); }
+.logout-btn { font-family:'Oswald',sans-serif; font-size:10px; letter-spacing:3px; color:var(--muted); text-transform:uppercase; cursor:pointer; background:none; border:none; padding:6px 12px; transition:color 0.15s; }
+.logout-btn:hover { color:var(--red); }
+
+.tabs { display:flex; border-bottom:1px solid var(--border); padding:0 28px; background:var(--surface); }
+.tab { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); padding:14px 20px; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:color 0.15s, border-color 0.15s; }
+.tab:hover { color:var(--paper); }
+.tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+
+.content { padding:32px 28px; max-width:900px; margin:0 auto; }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+.section-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
+.section-title { font-family:'Oswald',sans-serif; font-size:18px; letter-spacing:3px; text-transform:uppercase; color:var(--paper); }
+.badge { font-family:'Oswald',sans-serif; font-size:10px; letter-spacing:2px; color:var(--gold); background:rgba(201,150,42,0.1); border:1px solid rgba(201,150,42,0.3); padding:3px 10px; }
+
+.comment-card { background:var(--surface); border:1px solid var(--border); padding:18px 20px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
+.comment-card-left { flex:1; }
+.comment-author { font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:2px; color:var(--gold); text-transform:uppercase; margin-bottom:6px; }
+.comment-text { font-size:14px; color:rgba(242,237,228,0.8); line-height:1.6; margin-bottom:8px; }
+.comment-date { font-size:10px; color:var(--muted); letter-spacing:1px; }
+
+.delete-btn { padding:6px 12px; background:none; border:1px solid var(--border); color:var(--muted); font-family:'Oswald',sans-serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; flex-shrink:0; transition:all 0.15s; }
+.delete-btn:hover { border-color:var(--red); color:var(--red); }
+.edit-btn { padding:6px 12px; background:none; border:1px solid var(--border); color:var(--muted); font-family:'Oswald',sans-serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; flex-shrink:0; transition:all 0.15s; }
+.edit-btn:hover { border-color:var(--gold); color:var(--gold); }
+.save-btn { padding:6px 12px; background:var(--green); border:1px solid var(--green); color:var(--paper); font-family:'Oswald',sans-serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all 0.15s; }
+.save-btn:hover { background:#1e4d28; }
+.cancel-btn { padding:6px 12px; background:none; border:1px solid var(--border); color:var(--muted); font-family:'Oswald',sans-serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all 0.15s; }
+
+.empty-msg { text-align:center; padding:48px; color:var(--muted); font-size:13px; letter-spacing:2px; text-transform:uppercase; border:1px dashed var(--border); }
+
+.decision-card { background:var(--surface); border:1px solid var(--border); padding:16px 20px; margin-bottom:10px; flex-direction:column; display:flex; }
+.decision-card-top { display:flex; justify-content:space-between; align-items:center; width:100%; gap:16px; }
+.decision-main-text { font-family:'Oswald',sans-serif; font-size:16px; font-weight:700; color:var(--paper); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+.decision-subs { font-size:12px; color:var(--muted); }
+.decision-tag { font-size:9px; letter-spacing:2px; color:var(--gold); text-transform:uppercase; margin-top:4px; }
+.decision-card-btns { display:flex; gap:8px; flex-shrink:0; }
+
+.edit-form { display:none; flex-direction:column; gap:10px; margin-top:12px; padding-top:12px; border-top:1px solid var(--border); }
+.edit-form.open { display:flex; }
+.edit-form input, .edit-form textarea { width:100%; padding:8px 10px; background:var(--bg); border:1px solid var(--border); color:var(--paper); font-family:'Manrope',sans-serif; font-size:13px; outline:none; resize:none; transition:border-color 0.15s; }
+.edit-form input:focus, .edit-form textarea:focus { border-color:var(--gold); }
+.edit-form input::placeholder, .edit-form textarea::placeholder { color:var(--muted); }
+.edit-form label { font-size:8px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:3px; display:block; }
+.edit-form-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.edit-form-actions { display:flex; gap:8px; justify-content:flex-end; }
+
+.add-form { background:var(--surface); border:1px solid var(--border); padding:24px; margin-bottom:28px; }
+.add-form-title { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:4px; color:var(--muted); text-transform:uppercase; margin-bottom:18px; }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+.form-field label { display:block; font-size:9px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:6px; }
+.form-field input, .form-field textarea { width:100%; padding:10px 12px; background:var(--bg); border:1px solid var(--border); color:var(--paper); font-family:'Manrope',sans-serif; font-size:13px; outline:none; resize:none; transition:border-color 0.15s; }
+.form-field input:focus, .form-field textarea:focus { border-color:var(--gold); }
+.form-field input::placeholder, .form-field textarea::placeholder { color:var(--muted); }
+.add-btn { padding:10px 24px; background:var(--green); color:var(--paper); border:none; font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; cursor:pointer; transition:background 0.15s; }
+.add-btn:hover { background:#1e4d28; }
+
+.stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:32px; }
+.stat-card { background:var(--surface); border:1px solid var(--border); padding:20px; text-align:center; }
+.stat-num { font-family:'Oswald',sans-serif; font-size:36px; font-weight:700; color:var(--gold); margin-bottom:6px; }
+.stat-lbl { font-size:9px; letter-spacing:3px; color:var(--muted); text-transform:uppercase; }
+
+.loading { text-align:center; padding:32px; color:var(--muted); font-size:12px; letter-spacing:2px; text-transform:uppercase; }
+</style>
+</head>
+<body>
+
+<div class="login-screen" id="loginScreen">
+  <div class="login-logo">YOTTA CORP</div>
+  <div class="login-title">Admin <span>Panel</span></div>
+  <div class="login-box">
+    <input class="login-input" id="loginPass" type="password" placeholder="Parol" onkeydown="if(event.key==='Enter') doLogin()">
+    <button class="login-btn" onclick="doLogin()">Kirish</button>
+    <div class="login-error" id="loginError">Noto'g'ri parol</div>
+  </div>
+</div>
+
+<div class="admin-screen" id="adminScreen">
+  <div class="topbar">
+    <span class="topbar-brand">YOTTA CORP · <span>Admin</span></span>
+    <button class="logout-btn" onclick="doLogout()">Chiqish</button>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('comments')">Izohlar</div>
+    <div class="tab" onclick="switchTab('decisions')">Qarorlar</div>
+    <div class="tab" onclick="switchTab('stats')">Statistika</div>
+  </div>
+  <div class="content">
+
+    <div class="tab-panel active" id="tab-comments">
+      <div class="section-header">
+        <span class="section-title">Izohlar</span>
+        <span class="badge" id="commentCount">0 ta</span>
+      </div>
+      <div id="commentsList"><div class="loading">Yuklanmoqda...</div></div>
+    </div>
+
+    <div class="tab-panel" id="tab-decisions">
+      <div class="add-form">
+        <div class="add-form-title">+ Yangi qaror qo'shish</div>
+        <div class="form-grid">
+          <div class="form-field"><label>Asosiy qaror</label><input id="dMain" type="text" placeholder="masalan: Uxla"></div>
+          <div class="form-field"><label>Tag</label><input id="dTag" type="text" placeholder="masalan: Klassik yondashuv"></div>
+          <div class="form-field"><label>Kod</label><input id="dCode" type="text" placeholder="masalan: SLP-001"></div>
+          <div class="form-field"><label>Ko'rsatmalar (vergul bilan)</label><input id="dSubs" type="text" placeholder="Ko'zingni yum, Yana uxla"></div>
+        </div>
+        <div class="form-field" style="margin-bottom:16px"><label>Tahlil</label><textarea id="dAnalysis" rows="2" placeholder="Qisqa izoh..."></textarea></div>
+        <button class="add-btn" onclick="addDecision()">+ Qo'shish</button>
+      </div>
+      <div class="section-header">
+        <span class="section-title">Barcha qarorlar</span>
+        <span class="badge" id="decisionCount">0 ta</span>
+      </div>
+      <div id="decisionsList"><div class="loading">Yuklanmoqda...</div></div>
+    </div>
+
+    <div class="tab-panel" id="tab-stats">
+      <div class="section-title" style="margin-bottom:24px">Statistika</div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="statComments">0</div><div class="stat-lbl">Izohlar</div></div>
+        <div class="stat-card"><div class="stat-num" id="statDecisions">0</div><div class="stat-lbl">Qarorlar</div></div>
+        <div class="stat-card"><div class="stat-num" id="statCustom">0</div><div class="stat-lbl">Qo'shilgan</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://epirbmeffyzuurgrbndo.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_ILXZdfAb-3csqdwneNXeFw_kkM8dPjD';
+const ADMIN_PASS = 'yotta2024';
+
+async function api(path, opts = {}) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation',
+      ...opts.headers
+    },
+    ...opts
+  });
+  if (!res.ok) { const t = await res.text(); throw new Error(t); }
+  const text = await res.text();
+  return text ? JSON.parse(text) : [];
+}
+
+function doLogin() {
+  if (document.getElementById('loginPass').value === ADMIN_PASS) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminScreen').classList.add('visible');
+    loadAll();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+
+function doLogout() {
+  document.getElementById('adminScreen').classList.remove('visible');
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginPass').value = '';
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['comments','decisions','stats'][i] === name));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+async function loadAll() {
+  await Promise.all([loadComments(), loadDecisions()]);
+}
+
+// COMMENTS
+async function loadComments() {
+  try {
+    const comments = await api('comments?select=*&order=id.desc');
+    document.getElementById('commentCount').textContent = comments.length + ' ta';
+    document.getElementById('statComments').textContent = comments.length;
+    const list = document.getElementById('commentsList');
+    if (!comments.length) { list.innerHTML = '<div class="empty-msg">Hali izoh yo\'q</div>'; return; }
+    list.innerHTML = comments.map(c => `
+      <div class="comment-card">
+        <div class="comment-card-left">
+          <div class="comment-author">${c.name}</div>
+          <div class="comment-text">${c.text}</div>
+          <div class="comment-date">${c.date}</div>
+        </div>
+        <button class="delete-btn" onclick="deleteComment(${c.id})">O'chirish</button>
+      </div>`).join('');
+  } catch(e) { document.getElementById('commentsList').innerHTML = '<div class="empty-msg">Xatolik: ' + e.message + '</div>'; }
+}
+
+async function deleteComment(id) {
+  if (!confirm('O\'chirishni tasdiqlaysizmi?')) return;
+  await api('comments?id=eq.' + id, { method:'DELETE' });
+  loadComments();
+}
+
+// DECISIONS
+async function loadDecisions() {
+  try {
+    const rows = await api('decisions?select=*&order=id');
+    const decisions = rows.map(r => ({ ...r, subs: Array.isArray(r.subs) ? r.subs : JSON.parse(r.subs || '[]') }));
+    document.getElementById('decisionCount').textContent = decisions.length + ' ta';
+    document.getElementById('statDecisions').textContent = decisions.length;
+    document.getElementById('statCustom').textContent = decisions.filter(d=>d.custom).length;
+    const list = document.getElementById('decisionsList');
+    list.innerHTML = decisions.map(d => `
+      <div class="decision-card" id="dc-${d.id}">
+        <div class="decision-card-top">
+          <div style="flex:1">
+            <div class="decision-main-text">${d.main}</div>
+            <div class="decision-subs">${d.subs.join(' · ')}</div>
+            <div class="decision-tag">${d.tag} · ${d.code}</div>
+          </div>
+          <div class="decision-card-btns">
+            <button class="edit-btn" onclick="toggleEdit('${d.id}')">✏ Tahrirlash</button>
+            <button class="delete-btn" onclick="deleteDecision('${d.id}')">O'chirish</button>
+          </div>
+        </div>
+        <div class="edit-form" id="ef-${d.id}">
+          <div class="edit-form-row">
+            <div><label>Asosiy qaror</label><input id="em-${d.id}" value="${d.main}"></div>
+            <div><label>Tag</label><input id="et-${d.id}" value="${d.tag}"></div>
+            <div><label>Kod</label><input id="ec-${d.id}" value="${d.code}"></div>
+            <div><label>Ko'rsatmalar (vergul bilan)</label><input id="es-${d.id}" value="${d.subs.join(', ')}"></div>
+          </div>
+          <div><label>Tahlil</label><textarea id="ea-${d.id}" rows="2">${d.analysis}</textarea></div>
+          <div class="edit-form-actions">
+            <button class="cancel-btn" onclick="toggleEdit('${d.id}')">Bekor</button>
+            <button class="save-btn" onclick="saveDecision('${d.id}')">✓ Saqlash</button>
+          </div>
+        </div>
+      </div>`).join('');
+  } catch(e) { document.getElementById('decisionsList').innerHTML = '<div class="empty-msg">Xatolik: ' + e.message + '</div>'; }
+}
+
+function toggleEdit(id) { document.getElementById('ef-'+id).classList.toggle('open'); }
+
+async function saveDecision(id) {
+  const main = document.getElementById('em-'+id).value.trim();
+  const tag  = document.getElementById('et-'+id).value.trim();
+  const code = document.getElementById('ec-'+id).value.trim();
+  const subs = document.getElementById('es-'+id).value.split(',').map(s=>s.trim()).filter(Boolean);
+  const analysis = document.getElementById('ea-'+id).value.trim();
+  if (!main) { alert('Asosiy qarorni kiriting'); return; }
+  await api('decisions?id=eq.'+id, { method:'PATCH', body: JSON.stringify({ main, tag, code, subs, analysis }) });
+  await loadDecisions();
+}
+
+async function deleteDecision(id) {
+  if (!confirm('O\'chirishni tasdiqlaysizmi?')) return;
+  await api('decisions?id=eq.'+id, { method:'DELETE' });
+  loadDecisions();
+}
+
+async function addDecision() {
+  const main = document.getElementById('dMain').value.trim();
+  const tag  = document.getElementById('dTag').value.trim();
+  const code = document.getElementById('dCode').value.trim();
+  const subs = document.getElementById('dSubs').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const analysis = document.getElementById('dAnalysis').value.trim();
+  if (!main) { alert('Asosiy qarorni kiriting'); return; }
+  const newD = { id:'custom_'+Date.now(), main, tag: tag||'Yangi qaror', code: code||'NEW-'+Date.now().toString().slice(-3), subs, analysis: analysis||'—', custom:true };
+  await api('decisions', { method:'POST', body: JSON.stringify(newD) });
+  ['dMain','dTag','dCode','dSubs','dAnalysis'].forEach(i => document.getElementById(i).value='');
+  await loadDecisions();
+}
+</script>
+</body>
+</html>
